@@ -1,7 +1,7 @@
 ---
 title: "Lab 3: Depth-Damage Models"
 subtitle: "DataFrames and Distributions"
-author: "Your Name"
+author: "Jonah Schaechter js336"
 date: 2024-01-26
 week: 3
 categories: [Lab]
@@ -57,6 +57,12 @@ Plots.default(; margin=6Plots.mm)
 ```
 
 # Site information
+
+Choosing Galveston Pier 21, Texas
+The guage is at 29° 18.6 N, 94° 47.6 W
+https://maps.app.goo.gl/GyanSMA2fp9rkVrT9
+
+
 
 # Depth-Damage
 
