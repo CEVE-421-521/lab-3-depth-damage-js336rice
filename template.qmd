@@ -163,6 +163,21 @@ plot!(p1, house_dist; label="House Distribution", linewidth=2) # <1>
 ```
 
 Monte Carlo Algorithm:
+1. Sample $N$ values from the distribution of hazard
+2. For each value, estimate the damage using the depth-damage function
+3. Average the damages
+
+1. Sample $N$ values from the distribution of hazard
+```{julia}
+N = 10#1000000 #N = one million
+Samples = rand(house_dist, N) #Get one million random samples from our distribution
+```
+
+2. For each value, estimate the damage using the depth-damage function
+```{julia}
+house_damage = damage_fn.(Samples)
+#print(house_damage)
+```
 
 
 # Discussion
