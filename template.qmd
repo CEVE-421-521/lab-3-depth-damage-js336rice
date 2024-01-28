@@ -230,6 +230,7 @@ house_dist2080 = GeneralizedExtremeValue(gauge_dist.μ - offset2080, gauge_dist.
 ```
 
 ```{julia}
+
 plot!(p1, house_dist2080; label="2080 House Distribution", linewidth=2) # <1>
 ```
 
