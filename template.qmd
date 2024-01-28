@@ -169,7 +169,7 @@ Monte Carlo Algorithm:
 
 1. Sample $N$ values from the distribution of hazard
 ```{julia}
-N = 10#1000000 #N = one million
+N = 1000000 #N = one million
 Samples = rand(house_dist, N) #Get one million random samples from our distribution
 ```
 
@@ -191,3 +191,19 @@ print("According to our Monte Carlo, the expected annual damages for this proper
 ```
 
 # Discussion
+
+```{julia}
+HundSamples = rand(Samples, 100)   #one hundred of our samples (Julia doesn't like to plot one million)
+HundFtSamples = eval(HundSamples)u"ft"
+Hundhouse_damage = damage_fn.(HundFtSamples)
+
+
+scatter(
+    HundFtSamples,
+    Hundhouse_damage;
+    xlabel="Flood Depth at House",
+    ylabel="Damage (%)",
+    label="100 Points sampled for our MC algorithm",
+    legend=:bottomright,
+    size=(700, 500),
+)
