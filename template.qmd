@@ -186,12 +186,13 @@ house_damage = damage_fn.(FtSamples)
 ```{julia}
 #print(length(house_damage), "\n")
 AvgDamage = sum(house_damage)/length(house_damage)
-print("According to our Monte Carlo, the expected annual damages for this propery are ", AvgDamage, " dollars")
+print("According to our Monte Carlo, the expected annual damages for this propery are ", round(AvgDamage; digits=2), " dollars")
 
 ```
 
 # Discussion
 
+Let's take a look at 100 of our sampled points and plot them on the depth-damage curve to see how they're distributed.
 ```{julia}
 HundSamples = rand(Samples, 100)   #one hundred of our samples (Julia doesn't like to plot one million)
 HundFtSamples = eval(HundSamples)u"ft"
@@ -207,3 +208,34 @@ scatter(
     legend=:bottomright,
     size=(700, 500),
 )
+```
+
+Sea levels are expected to rise by 4.4 ft in this location by 2080 according to NOAA according to intermediate-high projections:
+https://coast.noaa.gov/slr/#/layer/sce/4/-10554960.5624167/3413062.4218919543/12/satellite/85/0.8/2080/interHigh/midAccretion
+
+Let's re-do our calculation for an extra 4.4ft of sea level rise by lowering the height of our home above sea level by 4.4ft.
+
+```{julia}
+offset2080 = 0.51 #The house is 0.51 feet above the guage (Land is 4.41 ft + 0.5 ft concrete blocks - 4.4 ft sea level rise.)
+house_dist2080 = GeneralizedExtremeValue(gauge_dist.μ - offset2080, gauge_dist.σ, gauge_dist.ξ)
+```
+
+```{julia}
+plot!(p1, house_dist2080; label="2080 House Distribution", linewidth=2) # <1>
+```
+
+```{julia}
+N = 1000000 #N = one million
+Samples2080 = rand(house_dist2080, N) #Get one million random samples from our distribution
+```
+
+```{julia}
+
+FtSamples2080 = eval(Samples2080)u"ft"
+house_damage2080 = damage_fn.(FtSamples2080)
+
+```
+```{julia}
+
+AvgDamage = sum(house_damage2080)/length(house_damage2080)
+print("According to our Monte Carlo, the expected annual damages for this propery are ", round(AvgDamage; digits=2), " dollars in the year 2080")
