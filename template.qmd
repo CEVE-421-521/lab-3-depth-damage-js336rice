@@ -175,8 +175,13 @@ Samples = rand(house_dist, N) #Get one million random samples from our distribut
 
 2. For each value, estimate the damage using the depth-damage function
 ```{julia}
+#unitful.abbr(Samples[1])
+#uconvert.(u"ft" )
+Samples = ustrip.(u"ft", Samples)
+depths = uconvert.(u"ft", Samples)
 house_damage = damage_fn.(Samples)
 #print(house_damage)
+
 ```
 
 
