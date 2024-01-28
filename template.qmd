@@ -186,6 +186,7 @@ house_damage = damage_fn.(FtSamples)
 ```{julia}
 #print(length(house_damage), "\n")
 AvgDamage = sum(house_damage)/length(house_damage)
+print("According to our Monte Carlo, the expected annual damages for this propery are ", AvgDamage, " dollars")
 
 ```
 
