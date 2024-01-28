@@ -193,6 +193,8 @@ print("According to our Monte Carlo, the expected annual damages for this proper
 # Discussion
 
 Let's take a look at 100 of our sampled points and plot them on the depth-damage curve to see how they're distributed.
+
+We can see that most of the points are along the lower ends of the curve.  There are, however, still a few points high on the curve, reflecting the inevitability of large floods once enough time passes and enough samples are taken.
 ```{julia}
 HundSamples = rand(Samples, 100)   #one hundred of our samples (Julia doesn't like to plot one million)
 HundFtSamples = eval(HundSamples)u"ft"
