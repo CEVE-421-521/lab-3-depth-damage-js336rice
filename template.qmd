@@ -120,9 +120,7 @@ end
 damage_fn = get_depth_damage_function(dd.depths, dd.damages)
 ```
 
-The depth damage cuve here shows how damage increases rapidly with flood depth at first, but then begins to slow down. This makes sense, as the bottom of the curve essentially reperesents the difference between not flooding,and flooding.
 
-Once a high enough depth is reached, damage begins to increase linearly with depth.  
 
 ```{julia}
 p = let
@@ -141,6 +139,10 @@ p = let
 end
 p
 ```
+
+
+The depth damage curve here shows how damage increases rapidly with flood depth at first, but then begins to slow down. This makes sense, as the bottom of the curve essentially represents the difference between not flooding,and flooding.
+Once a high enough depth is reached, damage begins to increase linearly with depth.
 
 # Expected annual damages
 ```{julia}
