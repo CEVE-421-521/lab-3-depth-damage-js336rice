@@ -181,6 +181,12 @@ FtSamples = eval(Samples)u"ft"
 house_damage = damage_fn.(FtSamples)
 
 ```
+3. Average the damages
 
+```{julia}
+#print(length(house_damage), "\n")
+AvgDamage = sum(house_damage)/length(house_damage)
+
+```
 
 # Discussion
