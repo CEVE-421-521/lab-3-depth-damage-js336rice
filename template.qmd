@@ -25,19 +25,19 @@ format:
 
     # YOU CAN DO PDF OR DOCX BUT NOT BOTH
     # IF YOU UNCOMMENT docx, COMMENT OR DELETE pdf
-    pdf:
-        documentclass: article
-        fontsize: 11pt
-        geometry:
-            - margin=1in  
+    #pdf:
+        #documentclass: article
+        #fontsize: 11pt
+        #geometry:
+         #   - margin=1in  
+        #number-sections: true
+        #code-line-numbers: true
+
+    docx: 
+        toc: true
+        fig-format: png
         number-sections: true
         code-line-numbers: true
-
-    #docx: 
-    #    toc: true
-    #    fig-format: png
-    #    number-sections: true
-    #    code-line-numbers: true
 
 date-format: "ddd., MMM. D"
 ---
@@ -119,6 +119,10 @@ end
 ```{julia}
 damage_fn = get_depth_damage_function(dd.depths, dd.damages)
 ```
+
+The depth damage cuve here shows how damage increases rapidly with flood depth at first, but then begins to slow down. This makes sense, as the bottom of the curve essentially reperesents the difference between not flooding,and flooding.
+
+Once a high enough depth is reached, damage begins to increase linearly with depth.  
 
 ```{julia}
 p = let
@@ -216,7 +220,7 @@ scatter(
 Sea levels are expected to rise by 4.4 ft in this location by 2080 according to NOAA according to intermediate-high projections:
 https://coast.noaa.gov/slr/#/layer/sce/4/-10554960.5624167/3413062.4218919543/12/satellite/85/0.8/2080/interHigh/midAccretion
 
-Let's re-do our calculation for an extra 4.4ft of sea level rise by lowering the height of our home above sea level by 4.4ft.
+Let's re-do our Monte Carlo approximation for an extra 4.4ft of sea level rise by lowering the height of our home above sea level by 4.4ft.
 
 ```{julia}
 offset2080 = 0.51 #The house is 0.51 feet above the guage (Land is 4.41 ft + 0.5 ft concrete blocks - 4.4 ft sea level rise.)
@@ -241,5 +245,5 @@ house_damage2080 = damage_fn.(FtSamples2080)
 ```{julia}
 
 AvgDamage = sum(house_damage2080)/length(house_damage2080)
-print("According to our Monte Carlo, the expected annual damages for this propery are ", round(AvgDamage; digits=2), " dollars in the year 2080.")
+print("According to our Monte Carlo, the expected annual damages for this property are ", round(AvgDamage; digits=2), " dollars in the year 2080.")
 ```
