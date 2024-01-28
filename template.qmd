@@ -65,10 +65,104 @@ https://maps.app.goo.gl/GyanSMA2fp9rkVrT9
 Our building is 302 17th St, Galveston, TX 77550,
 A multi-family residential unit 0.5 miles from the pier.
 
-It is 4.41 feet or 1.34 meters above sea level in elevation
+It is 4.41 feet or 1.34 meters above sea level in elevation.
+Looking at it on street view, the house appears to be on concrete blocks about 6 inches tall, giving it an effective height of 4.91 feet.
 
+Row 98 from the data is two-story, no basement in Galveston, so we'll be using that.  The home is on concrete blocks, so we can be confident that it doesn't have a basement.
 # Depth-Damage
+```{julia}
+haz_fl_dept = CSV.read("data/haz_fl_dept.csv", DataFrame)
+#first(haz_fl_dept, 3) # <1>
+
+include("depthdamage.jl")
+
+#demo_row = @rsubset(haz_fl_dept, :Description == "one story, Contents, fresh water, short duration")[1, :,]
+demo_row = @rsubset(haz_fl_dept, :Column1 == 98)[1, :,] #Row 98 from the data is two-story, no basement in Galveston
+dd = DepthDamageData(demo_row)
+fieldnames(typeof(dd))
+```
+
+```{julia}
+scatter(
+    dd.depths,
+    dd.damages;
+    xlabel="Flood Depth at House",
+    ylabel="Damage (%)",
+    label="$(dd.description) ($(dd.source))",
+    legend=:bottomright,
+    size=(700, 500),
+)
+```
+
+
+```{julia}
+function get_depth_damage_function(
+    depth_train::Vector{<:T}, dmg_train::Vector{<:AbstractFloat}
+) where {T<:Unitful.Length}
+
+    # interpolate
+    depth_ft = ustrip.(u"ft", depth_train)
+    interp_fn = Interpolations.LinearInterpolation(
+        depth_ft,
+        dmg_train;
+        extrapolation_bc=Interpolations.Flat(),
+    )
+
+    damage_fn = function (depth::T2) where {T2<:Unitful.Length}
+        return interp_fn(ustrip.(u"ft", depth))
+    end
+    return damage_fn
+end
+```
+
+```{julia}
+damage_fn = get_depth_damage_function(dd.depths, dd.damages)
+```
+
+```{julia}
+p = let
+    depths = uconvert.(u"ft", (-10.0u"ft"):(1.0u"inch"):(30.0u"ft")) # <1>
+    damages = damage_fn.(depths) # <2>
+    scatter(
+        depths,
+        damages;
+        xlabel="Flood Depth",
+        ylabel="Damage (%)",
+        label="$(dd.description) ($(dd.source))",
+        legend=:bottomright,
+        size=(800, 400),
+        linewidth=2,
+    )
+end
+p
+```
 
 # Expected annual damages
+```{julia}
+gauge_dist = GeneralizedExtremeValue(5, 1.5, 0.1)
+```
+I know plotting this isn't necessary, but I like to plot things.
+```{julia}
+p1 = plot(
+    gauge_dist;
+    label="Gauge Distribution",
+    xlabel="Water Level (ft)",
+    ylabel="Probability Density",
+    legend=:topright,
+    linewidth=2,
+)
+```
+
+```{julia}
+offset = 4.91 #The house is 4.91 feet above the guage (Land is 4.41 ft + 0.5 ft concrete blocks the house is built on.)
+house_dist = GeneralizedExtremeValue(gauge_dist.μ - offset, gauge_dist.σ, gauge_dist.ξ)
+```
+
+```{julia}
+plot!(p1, house_dist; label="House Distribution", linewidth=2) # <1>
+```
+
+Monte Carlo Algorithm:
+
 
 # Discussion
